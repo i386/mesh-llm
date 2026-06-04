@@ -10,7 +10,7 @@ param(
 $ErrorActionPreference = "Stop"
 $ProgressPreference = "SilentlyContinue"
 
-$Repo = if ($env:MESH_LLM_INSTALL_REPO) { $env:MESH_LLM_INSTALL_REPO } else { "Mesh-LLM/mesh-llm" }
+$Repo = if ($env:MESH_LLM_INSTALL_REPO) { $env:MESH_LLM_INSTALL_REPO } else { "i386/mesh-llm" }
 
 function Test-Truthy {
     param([string]$Value)
@@ -44,7 +44,7 @@ Environment overrides:
   MESH_LLM_INSTALL_DIR
   MESH_LLM_INSTALL_FLAVOR
   MESH_LLM_INSTALL_PRERELEASE=1
-  MESH_LLM_INSTALL_REPO=Mesh-LLM/mesh-llm
+  MESH_LLM_INSTALL_REPO=i386/mesh-llm
 "@
 }
 

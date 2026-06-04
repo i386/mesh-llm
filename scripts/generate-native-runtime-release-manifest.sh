@@ -2,7 +2,7 @@
 set -euo pipefail
 
 OUT=""
-REPO="${GITHUB_REPOSITORY:-Mesh-LLM/mesh-llm}"
+REPO="${GITHUB_REPOSITORY:-i386/mesh-llm}"
 TAG="${RELEASE_TAG:-}"
 TMP_ROOT=""
 trap 'rm -rf "$TMP_ROOT"' EXIT

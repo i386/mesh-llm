@@ -27,7 +27,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 PACKAGE_SWIFT="${3:-$REPO_ROOT/Package.swift}"
 ARTIFACT_NAME="MeshLLMFFI.xcframework.zip"
-EXPECTED_URL="https://github.com/Mesh-LLM/mesh-llm/releases/download/$TAG/$ARTIFACT_NAME"
+EXPECTED_URL="https://github.com/i386/mesh-llm/releases/download/$TAG/$ARTIFACT_NAME"
 
 if [[ ! -f "$ARTIFACT_PATH" ]]; then
     echo "Swift release artifact does not exist: $ARTIFACT_PATH" >&2
