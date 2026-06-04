@@ -223,10 +223,10 @@ library_pattern() {
     esac
 }
 
-primary_library_name() {
+primary_library_names() {
     case "$TARGET_TRIPLE" in
         *apple-darwin) printf 'libllama.dylib\n' ;;
-        *windows*) printf 'libllama.dll\n' ;;
+        *windows*) printf '%s\n' libllama.dll llama.dll ;;
         *) printf 'libllama.so\n' ;;
     esac
 }
@@ -280,18 +280,27 @@ find_ffi_library() {
 }
 
 collect_runtime_libraries() {
-    local pattern primary
+    local pattern primary_names
     pattern="$(library_pattern)"
-    primary="$(primary_library_name)"
+    primary_names="$(primary_library_names | paste -sd ':' -)"
     find "$LLAMA_STAGE_BUILD_DIR" \( -type f -o -type l \) -name "$pattern" \
         ! -path '*/CMakeFiles/*' \
         | sort \
-        | awk -v primary="$primary" '
-            BEGIN { primary_path = "" }
+        | awk -v primary_names="$primary_names" '
+            BEGIN {
+                primary_path = ""
+                split(primary_names, primary, ":")
+            }
+            function is_primary(name) {
+                for (i in primary) {
+                    if (name == primary[i]) return 1
+                }
+                return 0
+            }
             {
                 name = $0
                 sub(/^.*\//, "", name)
-                if (name == primary) {
+                if (is_primary(name)) {
                     primary_path = $0
                 } else {
                     print $0
@@ -364,10 +373,11 @@ if [[ "${#runtime_libraries[@]}" -eq 0 ]]; then
     exit 1
 fi
 
-primary_name="$(primary_library_name)"
 last_index=$((${#runtime_libraries[@]} - 1))
-if [[ "$(basename "${runtime_libraries[$last_index]}")" != "$primary_name" ]]; then
-    echo "primary native runtime library not found: $primary_name" >&2
+primary_name="$(basename "${runtime_libraries[$last_index]}")"
+if ! primary_library_names | grep -Fxq "$primary_name"; then
+    echo "primary native runtime library not found; expected one of:" >&2
+    primary_library_names | sed 's/^/  /' >&2
     exit 1
 fi
 
